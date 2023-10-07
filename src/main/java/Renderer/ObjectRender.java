@@ -8,17 +8,19 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static Renderer.Window.GenerateWindow.root;
 
 public class ObjectRender {
 
-    private List<GameObject> GameObjects;
+    private List<GameObject> GameObjects = new ArrayList<>();
 
     private double renderSpeed = 0.003;
     public void _ObjectRender() {
         for (GameObject object: GameObjects) {
+            object.changeX(object.getX() + 1);
             renderObject(object);
         }
 
@@ -28,6 +30,7 @@ public class ObjectRender {
     private boolean renderObject(GameObject object) {
         switch (object.getShape()) {
             case Shapes.CUBE -> {
+
                 Rectangle rectangle = new Rectangle();
                 rectangle.setX(object.getX());
                 rectangle.setY(object.getY());
