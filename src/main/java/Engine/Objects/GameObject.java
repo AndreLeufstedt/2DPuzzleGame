@@ -1,26 +1,42 @@
 package Engine.Objects;
 
-public class GameObject {
+import Engine.Physics.Physics;
+import Engine.Utils.Vector2D;
 
-    private double X, Y, Height, Width;
-    private int gravity = 0;
+import java.util.ArrayList;
+import java.util.List;
 
-    private Shapes Shape;
+public class GameObject implements Physics {
 
-    public GameObject(double X, double Y, double Height, double Width, Shapes Shape) {
-        this.X = X;
-        this.Y = Y;
+    public static List<GameObject> GameObjects = new ArrayList<>();
+
+    private Vector2D Position = new Vector2D();
+
+    private double Height;
+    private double Width;
+    private double gravity = 0;
+
+    private final Shapes Shape;
+
+    protected Vector2D Velocity = new Vector2D(0, 0);
+
+
+
+
+
+    public GameObject(Vector2D Position, double Height, double Width, Shapes Shape) {
+        this.Position = Position;
         this.Height = Height;
         this.Width = Width;
         this.Shape = Shape;
     }
 
     public double getX() {
-        return X;
+        return Position.x;
     }
 
     public double getY() {
-        return Y;
+        return Position.y;
     }
 
     public double getHeight() {
@@ -32,12 +48,18 @@ public class GameObject {
     }
 
     public void changeX(double NewValue) {
-        this.X = NewValue;
+        this.Position.x = NewValue;
     }
 
     public void changeY(double NewValue) {
-        this.Y = NewValue;
+        this.Position.y = NewValue;
     }
+
+    public void changePositionVector(Vector2D vector) {
+        this.Position = Position.add(vector);
+    }
+
+    public Vector2D getPositionVector() { return this.Position; }
 
     public void changeHeight(double NewValue) {
         this.Height = NewValue;
@@ -60,4 +82,43 @@ public class GameObject {
     public Shapes getShape() {
         return this.Shape;
     }
+
+    @Override
+    public boolean changeGravity(double NewValue) {
+        if(this.gravity != 0) {
+            this.gravity = NewValue;
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void applyGravity() {
+        this.gravity = constGravity;
+    }
+
+    @Override
+    public void removeGravity() {
+        this.gravity = 0;
+
+    }
+
+    public void UpdateObject() {
+        changePositionVector(this.Velocity);
+    }
+
+
+    public static boolean[] checkCollisionBetween(GameObject obj1, GameObject obj2) {
+        // Check horizontal overlap
+        boolean collisionX = obj1.getX() + obj1.getWidth() >= obj2.getX() &&
+                obj2.getX() + obj2.getWidth() >= obj1.getX();
+
+        // Check if the bottom of obj1 is touching or penetrating the top of obj2
+        boolean onTopOf = obj1.getY() + obj1.getHeight() >= obj2.getY() &&
+                obj1.getY() + obj1.getHeight() <= obj2.getY() + obj2.getHeight();
+
+        return new boolean[]{collisionX, onTopOf};
+    }
+
 }

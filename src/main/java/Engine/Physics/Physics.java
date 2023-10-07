@@ -1,16 +1,19 @@
 package Engine.Physics;
 
 public interface Physics {
-    double gravity = 9.82;
+    final double constGravity = 0.1;
+
+    double gravity = 0;
+
     default double getGravity() {
-        return gravity;
+        return this.gravity;
     }
 
     boolean changeGravity(double NewValue);
 
-    void applyGravity(Object object);
+    void applyGravity();
 
-    void removeGravity(Object object);
+    void removeGravity();
 
 
 }

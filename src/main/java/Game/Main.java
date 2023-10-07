@@ -2,32 +2,41 @@ package Game;
 
 import Engine.Objects.GameObject;
 import Engine.Objects.Shapes;
-import Renderer.ObjectRender;
-import Renderer.Window.*;
-import javafx.animation.AnimationTimer;
+import Engine.Player;
+import Engine.Renderer.GraphicsHandler;
+import Engine.Renderer.ObjectRender;
+
+import Engine.Utils.Vector2D;
 import javafx.application.Application;
-import javafx.application.Application.Parameters;
 import javafx.stage.Stage;
 
-import static javafx.application.Application.launch;
+import java.util.Vector;
+
+import static Engine.Objects.GameObject.GameObjects;
 
 public class Main extends Application {
 
     public static ObjectRender ObjectHandler = new ObjectRender();
 
+    static {
+        GameObject PLAYER = new Player(new Vector2D(450, 450), 100, 50, Shapes.PLAYER);
+        GameObjects.add(PLAYER);
+
+        GameObject Floor = new GameObject(new Vector2D(0, 850), 50, 900, Shapes.CUBE);
+        GameObjects.add(Floor);
+    }
+
     public static void main(String[] args) {
-
-
-        GameObject myObject = new GameObject(150, 150, 50, 50, Shapes.CUBE);
-        ObjectHandler.addObjectToRender(myObject);
-
         launch(args);
+
+
+
     }
 
 
     @Override
-    public void start(Stage stage) throws Exception {
-        GenerateWindow.generateWindow(stage, "Game", 900, 900);
+    public void start(Stage stage) {
+        GraphicsHandler.generateWindow(stage, "Game", 900, 900);
 
 
     }

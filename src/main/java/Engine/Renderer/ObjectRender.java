@@ -1,33 +1,28 @@
-package Renderer;
+package Engine.Renderer;
 
 import Engine.Objects.GameObject;
 import Engine.Objects.Shapes;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static Renderer.Window.GenerateWindow.root;
+import static Engine.Objects.GameObject.GameObjects;
 
 public class ObjectRender {
 
-    private List<GameObject> GameObjects = new ArrayList<>();
 
-    private double renderSpeed = 0.003;
     public void _ObjectRender() {
-        for (GameObject object: GameObjects) {
-            object.changeX(object.getX() + 1);
+        for (GameObject object : GameObjects) {
+            object.UpdateObject();
             renderObject(object);
+
         }
 
     }
 
 
-    private boolean renderObject(GameObject object) {
+    private void renderObject(GameObject object) {
         switch (object.getShape()) {
             case Shapes.CUBE -> {
 
@@ -37,7 +32,7 @@ public class ObjectRender {
                 rectangle.setWidth(object.getWidth());
                 rectangle.setHeight(object.getHeight());
                 rectangle.setFill(Color.BLACK);
-                root.getChildren().add(rectangle);
+                GraphicsHandler.collisionLayer.getChildren().add(rectangle);
             }
 
             // Needs a lot of work
@@ -49,7 +44,7 @@ public class ObjectRender {
                 line.setEndY(object.getHeight());
                 line.setStroke(Color.BLACK);
                 line.setStrokeWidth(3);
-                root.getChildren().add(line);
+                GraphicsHandler.collisionLayer.getChildren().add(line);
 
             }
             // Needs a lot of work
@@ -59,12 +54,24 @@ public class ObjectRender {
                 circle.setCenterY(object.getY());
                 circle.setRadius(object.getWidth());
                 circle.setFill(Color.BLACK);
-                root.getChildren().add(circle);
+                GraphicsHandler.collisionLayer.getChildren().add(circle);
+            }
+
+            case Shapes.PLAYER -> {
+                Rectangle rectangle = new Rectangle();
+                rectangle.setX(object.getX());
+                rectangle.setY(object.getY());
+                rectangle.setWidth(object.getWidth());
+                rectangle.setHeight(object.getHeight());
+                rectangle.setFill(Color.RED);
+                GraphicsHandler.playerLayer.getChildren().add(rectangle);
             }
 
         }
-        return false;
+
     }
+
+
 
     public void addObjectToRender(GameObject object) {
         GameObjects.add(object);
@@ -73,5 +80,6 @@ public class ObjectRender {
     public void removeObjectFromRender(GameObject object) {
         GameObjects.remove(object);
     }
+
 
 }
