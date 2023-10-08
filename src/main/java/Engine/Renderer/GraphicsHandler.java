@@ -50,6 +50,14 @@ public class GraphicsHandler {
             System.out.println("Currently pressed keys: " + pressedKeys);
         });
 
+        // Add mouse click event handler
+        scene.setOnMouseClicked(event -> {
+            double x = event.getX();
+            double y = event.getY();
+            GameObject newObject = new GameObject(new Vector2D(x, y), 50, 50, Shapes.CUBE);
+            ObjectHandler.addObjectToRender(newObject);
+        });
+
         primaryStage.setScene(scene);
         primaryStage.show();
 

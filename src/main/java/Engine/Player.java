@@ -22,8 +22,10 @@ public class Player extends GameObject {
         // For the 'W' key (Jump logic)
         if (pressedKeys.contains(KeyCode.W)) {
             // Only allow jumping if the object is on the ground (you'll need a method or condition to check this)
-            if (isOnGround()) {
+            if (onGround(this)) {
+                System.out.println("On Floor");
                 this.Velocity.y = -3;  // This gives an initial upward velocity for the jump
+                this.changeY(this.getY() - 3);
             }
         }
         // No need for an else condition here since gravity will pull the object down after the jump
@@ -39,20 +41,36 @@ public class Player extends GameObject {
 
 
 
+
         // Gravity logic (pulling the object down after a jump)
         this.Velocity.y += constGravity;
+
 
         for(GameObject object : GameObjects) {
             if (this == object) continue;
 
-            boolean[] collisionResult = checkCollisionBetween(this, object);
-            System.out.println("Collision Result: " + Arrays.toString(collisionResult));
-
-            if (Arrays.equals(collisionResult, new boolean[]{false, true})) {
-                System.out.print("Collided with Floor");
-                this.Velocity.y = 0;
+            if (checkCollisionBetween(this, object)) {
+                // Handle the collision
+                if (this.getY() + this.getHeight() <= object.getY() + object.getHeight()) {
+                    // Player is on top of the object
+                    this.Velocity.y = 0;
+                    this.changeY(object.getY() - this.getHeight()); // Adjust player's position to sit on the object
+                }
+                // Add more conditions to handle collisions from other sides if needed
             }
         }
+
+        String collisionSide = sideCollision(this);
+        if (collisionSide.equals("left")) {
+            this.Velocity.x = 2;
+            this.changeX(this.getX() + 1);
+
+        } else if (collisionSide.equals("right")) {
+            this.Velocity.x = -2;
+            this.changeX(this.getX() - 1);
+        }
+
+
 
         this.changePositionVector(this.Velocity);
 
@@ -60,9 +78,6 @@ public class Player extends GameObject {
 
 
 
-    private boolean isOnGround() {
-        return false;
-    }
 
 
 }

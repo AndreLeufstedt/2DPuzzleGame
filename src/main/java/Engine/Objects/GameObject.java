@@ -109,16 +109,102 @@ public class GameObject implements Physics {
     }
 
 
-    public static boolean[] checkCollisionBetween(GameObject obj1, GameObject obj2) {
+    public static boolean checkCollisionBetween(GameObject obj1, GameObject obj2) {
         // Check horizontal overlap
         boolean collisionX = obj1.getX() + obj1.getWidth() >= obj2.getX() &&
                 obj2.getX() + obj2.getWidth() >= obj1.getX();
 
-        // Check if the bottom of obj1 is touching or penetrating the top of obj2
-        boolean onTopOf = obj1.getY() + obj1.getHeight() >= obj2.getY() &&
-                obj1.getY() + obj1.getHeight() <= obj2.getY() + obj2.getHeight();
+        // Check vertical overlap
+        boolean collisionY = obj1.getY() + obj1.getHeight() >= obj2.getY() &&
+                obj2.getY() + obj2.getHeight() >= obj1.getY();
 
-        return new boolean[]{collisionX, onTopOf};
+        // Return true if both horizontal and vertical overlaps exist
+        return collisionX && collisionY;
     }
+
+    public static boolean onGround(GameObject obj) {
+        for (GameObject other : GameObject.GameObjects) {
+            if (obj == other) continue; // Skip checking against itself
+
+            // Check horizontal overlap
+            boolean collisionX = obj.getX() + obj.getWidth() >= other.getX() &&
+                    other.getX() + other.getWidth() >= obj.getX();
+
+            // Check if the bottom of obj is close to or touching the top of other
+            boolean nearOrTouchingTop = (obj.getY() + obj.getHeight()) - other.getY() < 0.5 &&
+                    (obj.getY() + obj.getHeight()) - other.getY() >= 0;
+
+            if (collisionX && nearOrTouchingTop) {
+                return true; // obj is on or near the ground (on top of another object)
+            }
+        }
+        return false;
+    }
+
+
+    public static String sideCollision(GameObject obj) {
+        final double THRESHOLD = 2.0;  // Adjust this value as needed
+
+        for (GameObject other : GameObject.GameObjects) {
+            if (obj == other) continue; // Skip checking against itself
+
+            // Check vertical overlap
+            boolean collisionY = obj.getY() + obj.getHeight() >= other.getY() &&
+                    other.getY() + other.getHeight() >= obj.getY();
+
+            // Check if the left side of obj is close to the right side of other
+            boolean nearOrTouchingLeft = (obj.getX() - (other.getX() + other.getWidth())) < THRESHOLD &&
+                    (obj.getX() - (other.getX() + other.getWidth())) >= 0;
+
+            // Check if the right side of obj is close to the left side of other
+            boolean nearOrTouchingRight = ((obj.getX() + obj.getWidth()) - other.getX()) < THRESHOLD &&
+                    ((obj.getX() + obj.getWidth()) - other.getX()) >= 0;
+
+            if (collisionY && nearOrTouchingLeft) {
+                return "left"; // obj is colliding or close to the left side of another object
+            } else if (collisionY && nearOrTouchingRight) {
+                return "right"; // obj is colliding or close to the right side of another object
+            }
+        }
+        return "none"; // No sideways collision detected
+    }
+
+    public static Vector2D cornerCollision(GameObject obj) {
+        for (GameObject other : GameObject.GameObjects) {
+            if (obj == other) continue; // Skip checking against itself
+
+            // Check for bottom-left corner of obj aligning with top-right corner of other
+            boolean bottomLeftCorner = Math.abs(obj.getX() - (other.getX() + other.getWidth())) < 2 &&
+                    Math.abs((obj.getY() + obj.getHeight()) - other.getY()) < 2;
+
+            // Check for bottom-right corner of obj aligning with top-left corner of other
+            boolean bottomRightCorner = Math.abs((obj.getX() + obj.getWidth()) - other.getX()) < 2 &&
+                    Math.abs((obj.getY() + obj.getHeight()) - other.getY()) < 2;
+
+            if (bottomLeftCorner && obj.Velocity.x > 0) {
+                // Player is moving to the right, so ignore the bottom-left corner collision
+                continue;
+            } else if (bottomRightCorner && obj.Velocity.x < 0) {
+                // Player is moving to the left, so ignore the bottom-right corner collision
+                continue;
+            }
+
+            if (bottomLeftCorner) {
+                return new Vector2D(-2, other.getY() - obj.getHeight()); // Adjust left and up
+            } else if (bottomRightCorner) {
+                return new Vector2D(2, other.getY() - obj.getHeight()); // Adjust right and up
+            }
+        }
+        return null; // No corner collision detected
+    }
+
+
+
+
+
+
+
+
+
 
 }
