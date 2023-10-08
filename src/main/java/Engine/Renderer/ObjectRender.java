@@ -2,10 +2,14 @@ package Engine.Renderer;
 
 import Engine.Objects.GameObject;
 import Engine.Objects.Shapes;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+
+import java.util.Objects;
 
 import static Engine.Objects.GameObject.GameObjects;
 
@@ -25,13 +29,15 @@ public class ObjectRender {
     private void renderObject(GameObject object) {
         switch (object.getShape()) {
             case Shapes.CUBE -> {
-
                 Rectangle rectangle = new Rectangle();
+
                 rectangle.setX(object.getX());
                 rectangle.setY(object.getY());
                 rectangle.setWidth(object.getWidth());
                 rectangle.setHeight(object.getHeight());
+                // Set the texture (ImagePattern) to the square
                 rectangle.setFill(Color.BLACK);
+
                 GraphicsHandler.collisionLayer.getChildren().add(rectangle);
             }
 

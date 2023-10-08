@@ -22,7 +22,7 @@ public class Main extends Application {
         GameObject PLAYER = new Player(new Vector2D(450, 450), 100, 50, Shapes.PLAYER);
         GameObjects.add(PLAYER);
 
-        GameObject Floor = new GameObject(new Vector2D(0, 850), 50, 900, Shapes.CUBE);
+        GameObject Floor = new GameObject(new Vector2D(0, 900-128), 128, 900, Shapes.CUBE);
         GameObjects.add(Floor);
     }
 

@@ -24,7 +24,7 @@ public class Player extends GameObject {
             // Only allow jumping if the object is on the ground (you'll need a method or condition to check this)
             if (onGround(this)) {
                 System.out.println("On Floor");
-                this.Velocity.y = -3;  // This gives an initial upward velocity for the jump
+                this.Velocity.y = -5;  // This gives an initial upward velocity for the jump
                 this.changeY(this.getY() - 3);
             }
         }
